@@ -104,8 +104,7 @@ implementation
 {$R *.DFM}
 uses
   Windows, SysUtils, ShlObj, JPeg, Graphics, ShellApi, DateUtils, ActiveX,
-  MY_Regutil, MY_RestUtil, MY_WinUtil, MY_DirList, AppFuncU,
-  XMLIntf, XMLDoc, Variants;
+  MY_Regutil, MY_RestUtil, MY_WinUtil, MY_DirList, AppFuncU;
 
 const
   sSectionWallPaper = 'WallPaper';
@@ -125,57 +124,6 @@ type
   public
     constructor Create(aForm: TfrmMain);
   end;
-
-function IsLink(const aFileName: string): boolean;
-var
-  aExt: string;
-begin
-  aExt := LowerCase( ExtractFileExt(aFileName) );
-  Result := (aExt = '.lnk') or (aExt = '.url') or (aExt = '.pif');
-end;
-
-procedure CheckMSCFile(var aFile: string; out aIconIndex: Word);
-var
-  aXMLNode: IXMLNode;
-  s: string;
-begin
-  aIconIndex := 0;
-
-  if AnsiSameText(ExtractFileExt(aFile), '.msc') then
-  begin
-    // MSC-files bevatten een sectie waarin beschreven staat welk icoon
-    // gebruikt moet wordern. Als deze sectie leeg is, dan moet het standaard
-    // icoon van "%winsys%\mmc.exe" genomen worden.
-    try
-      aXMLNode := LoadXMLDocument(aFile).ChildNodes['MMC_ConsoleFile'].
-        ChildNodes['VisualAttributes'].ChildNodes['Icon'];
-{  <VisualAttributes>
-    <Icon Index="1" File="C:\WINDOWS\system32\mmc.exe">
-      <Image Name="Large" BinaryRefIndex="0"/>
-      <Image Name="Small" BinaryRefIndex="1"/>
-    </Icon>
-  </VisualAttributes> }
-      s := VarToStr(aXMLNode.Attributes['File']);
-      if FileExists(s) then
-      begin
-        aFile := s;
-        aXMLNode := aXMLNode.ChildNodes.First;
-        while Assigned(aXMLNode) do
-        begin
-          if AnsiSameText(aXMLNode.NodeName, 'Image') then
-          begin
-            aIconIndex := aXMLNode.Attributes['BinaryRefIndex'];
-            s := VarToStr(aXMLNode.Attributes['Name']);
-            if AnsiSameText(s, 'Small') then Break;
-          end;
-          aXMLNode := aXMLNode.NextSibling;
-        end;
-      end;
-    except
-      // Geen geldig MSC-bestand
-    end;
-  end;
-end;
 
 { TMenuPopulateThread }
 
@@ -261,10 +209,7 @@ procedure TMenuPopulateThread.PopulateStartMenu;
         aNewMenuItem.ImageIndex := 1; // Directory icoon
       end else
       begin
-        if IsLink(aFileName) then
-          aNewMenuItem.Caption := Copy(aFileName, 1, Length(aFileName)-4) // extentie eraf laten
-        else
-          aNewMenuItem.Caption := aFileName;
+        aNewMenuItem.Caption := ChangeFileExt(aFileName, ''); // extentie eraf laten
         aNewMenuItem.Tag := FForm.FFullLinkNames.Add(IncludeTrailingPathDelimiter(aDirList.Directory) + aFileName);
         aNewMenuItem.ImageIndex := GetImageIndex(FForm.FFullLinkNames[aNewMenuItem.Tag], FForm.ilMenu_LMB);
         aNewMenuItem.OnClick := FForm.OnMenuItemClick;
@@ -501,15 +446,6 @@ begin
   TStringList(FStartUpItems).Sorted := True;
   inherited;
   wpEditer := TWallPaper.Create(self);
-//  object wpEditer: TWallPaper
-//    Wallpaper =
-//      'C:\Documents and Settings\187rh\Local Settings\Application Data\' +
-//      'Microsoft\Wallpaper1.bmp'
-//    Tile = False
-//    Stretch = True
-//    Left = 168
-//    Top = 8
-//  end
 end;
 
 destructor TfrmMain.Destroy;

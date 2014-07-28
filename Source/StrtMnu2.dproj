@@ -41,7 +41,7 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<VerInfo_MinorVer>1</VerInfo_MinorVer>
+			<VerInfo_MinorVer>2</VerInfo_MinorVer>
 			<DCC_ExeOutput>..\TestApp</DCC_ExeOutput>
 			<VerInfo_Locale>1043</VerInfo_Locale>
 			<Manifest_File>None</Manifest_File>
@@ -59,9 +59,9 @@
 			<DCC_N>true</DCC_N>
 			<DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;$(DCC_Namespace)</DCC_Namespace>
 			<DCC_ImageBase>00400000</DCC_ImageBase>
-			<VerInfo_Build>3</VerInfo_Build>
+			<VerInfo_Build>5</VerInfo_Build>
 			<VerInfo_Release>1</VerInfo_Release>
-			<VerInfo_Keys>CompanyName=;FileDescription=2e Startmenu;FileVersion=1.1.1.3;InternalName=StrtMnu2;LegalCopyright=R. Hoek;LegalTrademarks=;OriginalFilename=StrtMnu2.exe;ProductName=Je 2e Startmenu;ProductVersion=1.1;Comments=</VerInfo_Keys>
+			<VerInfo_Keys>CompanyName=;FileDescription=2e Startmenu;FileVersion=1.2.1.5;InternalName=StrtMnu2;LegalCopyright=R. Hoek;LegalTrademarks=;OriginalFilename=StrtMnu2.exe;ProductName=Je 2e Startmenu;ProductVersion=1.2;Comments=</VerInfo_Keys>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base_Win32)'!=''">
 			<Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
@@ -122,7 +122,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">1</VersionInfo>
 						<VersionInfo Name="Release">1</VersionInfo>
-						<VersionInfo Name="Build">7</VersionInfo>
+						<VersionInfo Name="Build">11</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -134,7 +134,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName"/>
 						<VersionInfoKeys Name="FileDescription">2e Startmenu</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">1.1.1.7</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.1.1.11</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">StrtMnu2</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">R. Hoek</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
@@ -143,6 +143,9 @@
 						<VersionInfoKeys Name="ProductVersion">1.1</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
+					<Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclofficexp160.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+					</Excluded_Packages>
 				</Delphi.Personality>
 				<Platforms>
 					<Platform value="Win64">False</Platform>
