@@ -9,55 +9,63 @@ uses
 
 type
   TfrmMain = class(TForm)
-    actnAutoChange: TAction;
     actnBeheerMenu: TAction;
-    actnChangeWallPaper: TAction;
+    actnBeheerStartUpCommon: TAction;
+    actnBeheerStartUpUser: TAction;
     actnClose: TAction;
     actnRefresh: TAction;
     actnStartUpAll: TAction;
     actnStartupCommonOnly: TAction;
     actnStartupUserOnly: TAction;
+    actnWallPaper: TMenuItem;
+    actnWallpaperAutoChange: TAction;
+    actnWallPaperChange: TAction;
     actnWallPaperStrech: TAction;
     actnWallPaperTile: TAction;
-    Alleengedeeldeitems1: TMenuItem;
-    Alleenhuidigegebruiker1: TMenuItem;
     alMain: TActionList;
-    Automatischwijzigen1: TMenuItem;
-    Beheermenu1: TMenuItem;
-    Beide1: TMenuItem;
-    Cancel1: TMenuItem;
-    ChangeWP1: TMenuItem;
-    Close1: TMenuItem;
     dlgWallPaper: TOpenPictureDialog;
+    edtIconIndex: TJvSpinEdit;
     ilMenu_Default: TImageList;
     ilMenu_LMB: TImageList;
     ilMenu_StartUp: TImageList;
     Image1: TImage;
+    mnuBeheer: TMenuItem;
+    mnuBeheerMenu: TMenuItem;
+    mnuBeheerStartUpCommon: TMenuItem;
+    mnuBeheerStartUpUser: TMenuItem;
+    mnuClose: TMenuItem;
     mnuExecStartup: TMenuItem;
+    mnuRefresh: TMenuItem;
     mnuSepMenuList: TMenuItem;
     mnuStartMenuItems: TMenuItem;
+    mnuStartUpAll: TMenuItem;
+    mnuStartupCommonOnly: TMenuItem;
+    mnuStartupUserOnly: TMenuItem;
+    mnuWallpaperAutoChange: TMenuItem;
+    mnuWallPaperChange: TMenuItem;
+    mnuWallPaperStrech: TMenuItem;
+    mnuWallPaperTile: TMenuItem;
     N1: TMenuItem;
+    N2: TMenuItem;
     N3: TMenuItem;
     N4: TMenuItem;
     pmnuLMB: TPopupMenu;
     pmnuRMB: TPopupMenu;
-    edtIconIndex: TJvSpinEdit;
-    Stretch1: TMenuItem;
-    Tile1: TMenuItem;
     tiMain: TTrayIcon;
     tmrWPChange: TTimer;
     tvDebug: TTreeView;
-    Ververslijst1: TMenuItem;
-    procedure actnAutoChangeExecute(Sender: TObject);
-    procedure actnAutoChangeUpdate(Sender: TObject);
     procedure actnBeheerMenuExecute(Sender: TObject);
-    procedure actnChangeWallPaperExecute(Sender: TObject);
+    procedure actnBeheerStartUpCommonExecute(Sender: TObject);
+    procedure actnBeheerStartUpUserExecute(Sender: TObject);
     procedure actnCloseExecute(Sender: TObject);
     procedure actnRefreshExecute(Sender: TObject);
-    procedure actnStartUpAllExecute(Sender: TObject);
     procedure actnStartUpActionUpdate(Sender: TObject);
+    procedure actnStartUpAllExecute(Sender: TObject);
     procedure actnStartupCommonOnlyExecute(Sender: TObject);
     procedure actnStartupUserOnlyExecute(Sender: TObject);
+    procedure actnWallpaperAutoChangeExecute(Sender: TObject);
+    procedure actnWallpaperAutoChangeUpdate(Sender: TObject);
+    procedure actnWallPaperChangeExecute(Sender: TObject);
     procedure actnWallPaperStrechExecute(Sender: TObject);
     procedure actnWallPaperStrechUpdate(Sender: TObject);
     procedure actnWallPaperTileExecute(Sender: TObject);
@@ -306,19 +314,6 @@ begin
   end;
 end;
 
-{ TfrmMain }
-
-procedure TfrmMain.actnAutoChangeExecute(Sender: TObject);
-begin
-  WriteIni( AppIniFile, sSectionWallPaper, sIdentAutoChange, (Sender as TAction).Checked );
-end;
-
-procedure TfrmMain.actnAutoChangeUpdate(Sender: TObject);
-begin
-  (Sender as TAction).Checked :=
-    ReadIni( AppIniFile, sSectionWallPaper, sIdentAutoChange, RegBool );
-end;
-
 procedure TfrmMain.actnBeheerMenuExecute(Sender: TObject);
 begin
   if ForceDirectories(AppPath + 'Items') then
@@ -326,7 +321,74 @@ begin
       PChar('/e,/root,' + AppPath + 'Items'), nil, SW_SHOW);
 end;
 
-procedure TfrmMain.actnChangeWallPaperExecute(Sender: TObject);
+procedure TfrmMain.actnBeheerStartUpCommonExecute(Sender: TObject);
+begin
+  ShellExecute(Self.Handle, nil, 'explorer.exe',
+    PChar('/e,/root,' + FStartUpCommon), nil, SW_SHOW);
+end;
+
+procedure TfrmMain.actnBeheerStartUpUserExecute(Sender: TObject);
+begin
+  ShellExecute(Self.Handle, nil, 'explorer.exe',
+    PChar('/e,/root,' + FStartUpUser), nil, SW_SHOW);
+end;
+
+procedure TfrmMain.actnCloseExecute(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+procedure TfrmMain.actnRefreshExecute(Sender: TObject);
+begin
+  PopulateItems;
+end;
+
+procedure TfrmMain.actnStartUpActionUpdate(Sender: TObject);
+begin
+  (Sender as TCustomAction).Enabled := not Loading;
+end;
+
+procedure TfrmMain.actnStartUpAllExecute(Sender: TObject);
+var
+  n: integer;
+begin
+  if Loading then Exit;
+  for n:=0 to FStartUpItems.Count-1 do
+    ExeStartUpItem(n);
+end;
+
+procedure TfrmMain.actnStartupCommonOnlyExecute(Sender: TObject);
+var
+  n: integer;
+begin
+  if Loading then Exit;
+  for n:=0 to FStartUpItems.Count-1 do
+    ExeStartUpItem(n, CSIDL_COMMON_STARTUP);
+end;
+
+procedure TfrmMain.actnStartupUserOnlyExecute(Sender: TObject);
+var
+  n: integer;
+begin
+  if Loading then Exit;
+  for n:=0 to FStartUpItems.Count-1 do
+    ExeStartUpItem(n, CSIDL_STARTUP);
+end;
+
+{ TfrmMain }
+
+procedure TfrmMain.actnWallpaperAutoChangeExecute(Sender: TObject);
+begin
+  WriteIni( AppIniFile, sSectionWallPaper, sIdentAutoChange, (Sender as TAction).Checked );
+end;
+
+procedure TfrmMain.actnWallpaperAutoChangeUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Checked :=
+    ReadIni( AppIniFile, sSectionWallPaper, sIdentAutoChange, RegBool );
+end;
+
+procedure TfrmMain.actnWallPaperChangeExecute(Sender: TObject);
 const
   sWPFileName = 'WP_IconImage.bmp';
 var
@@ -361,43 +423,6 @@ begin
   end;
 end;
 
-procedure TfrmMain.actnCloseExecute(Sender: TObject);
-begin
-  Application.Terminate;
-end;
-
-procedure TfrmMain.actnRefreshExecute(Sender: TObject);
-begin
-  PopulateItems;
-end;
-
-procedure TfrmMain.actnStartUpAllExecute(Sender: TObject);
-var
-  n: integer;
-begin
-  if Loading then Exit;
-  for n:=0 to FStartUpItems.Count-1 do
-    ExeStartUpItem(n);
-end;
-
-procedure TfrmMain.actnStartupCommonOnlyExecute(Sender: TObject);
-var
-  n: integer;
-begin
-  if Loading then Exit;
-  for n:=0 to FStartUpItems.Count-1 do
-    ExeStartUpItem(n, CSIDL_COMMON_STARTUP);
-end;
-
-procedure TfrmMain.actnStartupUserOnlyExecute(Sender: TObject);
-var
-  n: integer;
-begin
-  if Loading then Exit;
-  for n:=0 to FStartUpItems.Count-1 do
-    ExeStartUpItem(n, CSIDL_STARTUP);
-end;
-
 procedure TfrmMain.actnWallPaperStrechExecute(Sender: TObject);
 begin
   wpEditer.Stretch := (Sender as TAction).Checked;
@@ -416,6 +441,13 @@ end;
 procedure TfrmMain.actnWallPaperTileUpdate(Sender: TObject);
 begin
   (Sender as TAction).Checked := wpEditer.Tile;
+end;
+
+procedure TfrmMain.AddLoading;
+begin
+  Inc(FLoadingCount);
+  if FLoadingCount = 1 then
+    LoadingChanged;
 end;
 
 function TfrmMain.AppIniFile: string;
@@ -454,18 +486,6 @@ begin
   FreeAndNil(FBaseMenuItems);
   FreeAndNil(FStartUpItems);
   inherited;
-end;
-
-procedure TfrmMain.actnStartUpActionUpdate(Sender: TObject);
-begin
-  (Sender as TCustomAction).Enabled := not Loading;
-end;
-
-procedure TfrmMain.AddLoading;
-begin
-  Inc(FLoadingCount);
-  if FLoadingCount = 1 then
-    LoadingChanged;
 end;
 
 procedure TfrmMain.ExeStartUpItem(const Index: integer; const aFolderID:

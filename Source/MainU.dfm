@@ -42,10 +42,22 @@ object frmMain: TfrmMain
     Images = ilMenu_Default
     Left = 16
     Top = 56
-    object Beheermenu1: TMenuItem
-      Action = actnBeheerMenu
+    object mnuBeheer: TMenuItem
+      Caption = 'Beheer'
+      object mnuBeheerMenu: TMenuItem
+        Action = actnBeheerMenu
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object mnuBeheerStartUpUser: TMenuItem
+        Action = actnBeheerStartUpUser
+      end
+      object mnuBeheerStartUpCommon: TMenuItem
+        Action = actnBeheerStartUpCommon
+      end
     end
-    object Ververslijst1: TMenuItem
+    object mnuRefresh: TMenuItem
       Action = actnRefresh
     end
     object N4: TMenuItem
@@ -53,41 +65,41 @@ object frmMain: TfrmMain
     end
     object mnuExecStartup: TMenuItem
       Caption = 'Opstart menu uitvoeren'
-      object Alleenhuidigegebruiker1: TMenuItem
+      object mnuStartupUserOnly: TMenuItem
         Action = actnStartupUserOnly
       end
-      object Alleengedeeldeitems1: TMenuItem
+      object mnuStartupCommonOnly: TMenuItem
         Action = actnStartupCommonOnly
       end
-      object Beide1: TMenuItem
+      object mnuStartUpAll: TMenuItem
         Action = actnStartUpAll
       end
     end
-    object Cancel1: TMenuItem
+    object actnWallPaper: TMenuItem
       Caption = 'Achtergrond'
-      object Tile1: TMenuItem
+      object mnuWallPaperTile: TMenuItem
         Action = actnWallPaperTile
         AutoCheck = True
       end
-      object Stretch1: TMenuItem
+      object mnuWallPaperStrech: TMenuItem
         Action = actnWallPaperStrech
         AutoCheck = True
       end
-      object ChangeWP1: TMenuItem
-        Action = actnChangeWallPaper
+      object mnuWallPaperChange: TMenuItem
+        Action = actnWallPaperChange
       end
       object N3: TMenuItem
         Caption = '-'
       end
-      object Automatischwijzigen1: TMenuItem
-        Action = actnAutoChange
+      object mnuWallpaperAutoChange: TMenuItem
+        Action = actnWallpaperAutoChange
         AutoCheck = True
       end
     end
     object N1: TMenuItem
       Caption = '-'
     end
-    object Close1: TMenuItem
+    object mnuClose: TMenuItem
       Action = actnClose
     end
   end
@@ -232,10 +244,10 @@ object frmMain: TfrmMain
     Images = ilMenu_LMB
     Left = 224
     Top = 8
-    object actnChangeWallPaper: TAction
+    object actnWallPaperChange: TAction
       Category = 'WallPaper'
       Caption = 'Selecteer andere'
-      OnExecute = actnChangeWallPaperExecute
+      OnExecute = actnWallPaperChangeExecute
     end
     object actnWallPaperTile: TAction
       Category = 'WallPaper'
@@ -259,16 +271,16 @@ object frmMain: TfrmMain
       OnExecute = actnCloseExecute
     end
     object actnBeheerMenu: TAction
-      Category = 'Overig'
-      Caption = 'Beheer menu'
+      Category = 'Beheer'
+      Caption = 'Startmenu'
       OnExecute = actnBeheerMenuExecute
     end
-    object actnAutoChange: TAction
+    object actnWallpaperAutoChange: TAction
       Category = 'WallPaper'
       AutoCheck = True
       Caption = 'Automatisch wijzigen'
-      OnExecute = actnAutoChangeExecute
-      OnUpdate = actnAutoChangeUpdate
+      OnExecute = actnWallpaperAutoChangeExecute
+      OnUpdate = actnWallpaperAutoChangeUpdate
     end
     object actnRefresh: TAction
       Category = 'Overig'
@@ -292,6 +304,16 @@ object frmMain: TfrmMain
       Caption = 'Beide'
       OnExecute = actnStartUpAllExecute
       OnUpdate = actnStartUpActionUpdate
+    end
+    object actnBeheerStartUpUser: TAction
+      Category = 'Beheer'
+      Caption = 'Opstartmenu '#39'gebruiker'#39
+      OnExecute = actnBeheerStartUpUserExecute
+    end
+    object actnBeheerStartUpCommon: TAction
+      Category = 'Beheer'
+      Caption = 'Opstartmenu '#39'gedeeld'#39
+      OnExecute = actnBeheerStartUpCommonExecute
     end
   end
   object ilMenu_Default: TImageList
